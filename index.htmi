@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CRATE NIGHT | Premium Management Platform</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+theme:{
+extend:{
+colors:{
+gold:"#D4AF37",
+darkbg:"#050505",
+card:"#111111"
+}
+}
+}
+}
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+body{
+background:#050505;
+color:white;
+font-family:Arial,sans-serif;
+}
+
+.gold{
+color:#D4AF37;
+}
+
+.gold-bg{
+background:#D4AF37;
+color:#000;
+}
+
+.card{
+background:#111;
+border:1px solid #333;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- NAVBAR -->
+
+<nav class="p-5 flex justify-between items-center border-b border-gray-800">
+
+<h1 class="text-2xl font-bold gold">
+CRATE NIGHT
+</h1>
+
+
+<div class="space-x-5">
+
+<button onclick="showPage('home')">
+Home
+</button>
+
+<button onclick="showPage('login')">
+Login
+</button>
+
+<button onclick="showPage('register')">
+Register
+</button>
+
+<button onclick="showPage('admin')">
+Admin
+</button>
+
+</div>
+
+
+</nav>
+
+
+
+<!-- HOME -->
+
+<section id="home" class="p-10 text-center">
+
+
+<h1 class="text-5xl font-bold gold mb-5">
+CRATE NIGHT
+</h1>
+
+
+<p class="text-gray-400 text-xl">
+Premium UK Company Management Platform
+</p>
+
+
+<button 
+onclick="showPage('register')"
+class="gold-bg px-8 py-3 rounded-xl mt-8">
+
+Create Account
+
+</button>
+
+
+</section>
+  <!-- REGISTER PAGE -->
+
+<section id="register" class="hidden p-8">
+
+<div class="max-w-md mx-auto card p-8 rounded-xl">
+
+<h2 class="text-3xl font-bold gold text-center mb-6">
+Create Account
+</h2>
+
+
+<input id="name"
+class="w-full p-3 mb-3 bg-black border border-gray-700 rounded"
+placeholder="Full Name">
+
+
+<input id="email"
+class="w-full p-3 mb-3 bg-black border border-gray-700 rounded"
+placeholder="Email">
+
+
+<input id="password"
+type="password"
+class="w-full p-3 mb-3 bg-black border border-gray-700 rounded"
+placeholder="Password">
+
+
+<button onclick="registerUser()"
+class="gold-bg w-full p-3 rounded">
+
+Register
+
+</button>
+
+</div>
+
+</section>
+
+
+
+
+<!-- LOGIN PAGE -->
+
+
+<section id="login" class="hidden p-8">
+
+
+<div class="max-w-md mx-auto card p-8 rounded-xl">
+
+
+<h2 class="text-3xl font-bold gold text-center mb-6">
+Login
+</h2>
+
+
+<input id="loginEmail"
+class="w-full p-3 mb-3 bg-black border border-gray-700 rounded"
+placeholder="Email">
+
+
+<input id="loginPassword"
+type="password"
+class="w-full p-3 mb-3 bg-black border border-gray-700 rounded"
+placeholder="Password">
+
+
+<button onclick="loginUser()"
+class="gold-bg w-full p-3 rounded">
+
+Login
+
+</button>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!-- USER DASHBOARD -->
+
+
+<section id="dashboard" class="hidden p-8">
+
+
+<div class="card p-8 rounded-xl">
+
+
+<h2 class="text-3xl gold font-bold">
+Welcome To CRATE NIGHT
+</h2>
+
+
+<div class="mt-6 grid md:grid-cols-3 gap-5">
+
+
+<div class="card p-5 rounded">
+<h3 class="gold">
+Level
+</h3>
+
+<p class="text-2xl">
+Gold Member
+</p>
+
+</div>
+
+
+
+<div class="card p-5 rounded">
+
+<h3 class="gold">
+Balance
+</h3>
+
+<p class="text-2xl">
+£0 UK Taka / $0 USD
+</p>
+
+
+</div>
+
+
+
+
+<div class="card p-5 rounded">
+
+<h3 class="gold">
+Monetization
+</h3>
+
+<p class="text-2xl">
+123 Options
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+<!-- ADMIN PANEL -->
+
+<section id="admin" class="hidden p-8">
+
+<div class="max-w-4xl mx-auto card p-8 rounded-xl">
+
+
+<h2 class="text-3xl font-bold gold">
+Admin Control Panel
+</h2>
+
+
+<p class="text-gray-400 mt-2">
+CRATE NIGHT UK Management
+</p>
+
+
+
+<div class="grid md:grid-cols-3 gap-5 mt-8">
+
+
+<div class="card p-5 rounded">
+
+<h3 class="gold">
+Users
+</h3>
+
+<p class="text-3xl">
+0
+</p>
+
+</div>
+
+
+
+<div class="card p-5 rounded">
+
+<h3 class="gold">
+Pending Approval
+</h3>
+
+<p class="text-3xl">
+0
+</p>
+
+</div>
+
+
+
+
+<div class="card p-5 rounded">
+
+<h3 class="gold">
+Revenue
+</h3>
+
+<p class="text-3xl">
+$0
+</p>
+
+</div>
+
+
+</div>
+
+
+
+<h3 class="gold text-xl mt-8">
+Member Level Control
+</h3>
+
+
+<select class="bg-black border border-gray-700 p-3 rounded mt-3">
+
+<option>Gold</option>
+<option>Silver</option>
+<option>Bronze</option>
+
+</select>
+
+
+
+</div>
+
+</section>
+
+
+
+
+<script>
+
+
+function showPage(page){
+
+let pages=[
+"home",
+"register",
+"login",
+"dashboard",
+"admin"
+];
+
+
+pages.forEach(function(p){
+
+document.getElementById(p)
+.classList.add("hidden");
+
+});
+
+
+document.getElementById(page)
+.classList.remove("hidden");
+
+}
+
+
+
+
+
+function registerUser(){
+
+let name=document.getElementById("name").value;
+
+alert(
+"Account Created Successfully for "
++name
+);
+
+
+showPage("dashboard");
+
+}
+
+
+
+
+function loginUser(){
+
+alert(
+"Login Successful"
+);
+
+
+showPage("dashboard");
+
+}
+
+
+
+</script>
+
+
+
+</body>
+</html>

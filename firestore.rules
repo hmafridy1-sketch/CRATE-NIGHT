@@ -4,7 +4,6 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
     function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
-    // Primary admin account. A future server-side admin:true claim is also accepted.
     function isAdmin() {
       return signedIn()
         && (request.auth.token.admin == true
@@ -36,6 +35,19 @@ service cloud.firestore {
         && request.resource.data.applicantUid == resource.data.applicantUid
         && request.resource.data.status in ['pending', 'approved', 'rejected'];
       allow delete: if isAdmin();
+    }
+
+    match /generatedDocuments/{documentId} {
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasAll(['type', 'applicationId', 'applicantUid', 'applicantEmail', 'name', 'status', 'issuedAt'])
+        && request.resource.data.type in ['id-card', 'certificate'];
+      allow read: if isAdmin() || (signedIn() && resource.data.applicantUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /mail/{mailId} {
+      allow create: if isAdmin();
+      allow read, update, delete: if isAdmin();
     }
 
     match /{document=**} {

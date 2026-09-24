@@ -4,22 +4,24 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
     function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
-    function isAdmin() { return signedIn() && request.auth.token.admin == true; }
+    // Primary admin account. A future server-side admin:true claim is also accepted.
+    function isAdmin() {
+      return signedIn()
+        && (request.auth.token.admin == true
+            || request.auth.token.email == 'cratenight@gmail.com');
+    }
 
     match /users/{userId} {
       allow create: if isOwner(userId)
         && request.resource.data.uid == userId
         && request.resource.data.role == 'member'
         && request.resource.data.status == 'active';
-
       allow read: if isOwner(userId) || isAdmin();
-
       allow update: if isAdmin() || (isOwner(userId)
         && request.resource.data.uid == resource.data.uid
         && request.resource.data.role == resource.data.role
         && request.resource.data.status == resource.data.status
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'email', 'updatedAt']));
-
       allow delete: if isAdmin();
     }
 
@@ -29,13 +31,10 @@ service cloud.firestore {
         && request.resource.data.status == 'pending'
         && request.resource.data.keys().hasAll(['applicantUid', 'applicantEmail', 'name', 'phone', 'purpose', 'status', 'createdAt'])
         && request.resource.data.keys().hasOnly(['applicantUid', 'applicantEmail', 'name', 'phone', 'purpose', 'status', 'createdAt']);
-
       allow read: if isAdmin() || (signedIn() && resource.data.applicantUid == request.auth.uid);
-
       allow update: if isAdmin()
         && request.resource.data.applicantUid == resource.data.applicantUid
         && request.resource.data.status in ['pending', 'approved', 'rejected'];
-
       allow delete: if isAdmin();
     }
 

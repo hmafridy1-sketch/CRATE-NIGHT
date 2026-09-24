@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CRATE NIGHT — Premium company management platform." />
+  <title>CRATE NIGHT | Premium Company Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { gold: '#D4AF37', ink: '#050505', panel: '#101010' },
+        boxShadow: { gold: '0 0 40px rgba(212,175,55,.12)' }
+      }}
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: Inter, sans-serif; background:#050505; color:#fff; }
+    .gold-text { background:linear-gradient(90deg,#fff0a8,#D4AF37,#fff0a8); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .glass { background:rgba(16,16,16,.82); border:1px solid rgba(212,175,55,.18); backdrop-filter:blur(14px); }
+    .gold-border { border-color:rgba(212,175,55,.35); }
+    .hidden-page { display:none; }
+    .toast { transform:translateY(20px); opacity:0; pointer-events:none; transition:.25s; }
+    .toast.show { transform:translateY(0); opacity:1; pointer-events:auto; }
+  </style>
+</head>
+<body>
+  <header class="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-xl">
+    <nav class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
+      <button onclick="showPage('home')" class="font-extrabold tracking-[.22em] text-lg gold-text">CRATE NIGHT</button>
+      <div class="hidden md:flex items-center gap-7 text-sm text-gray-300">
+        <button onclick="showPage('home')" class="hover:text-white">Home</button>
+        <a href="#features" class="hover:text-white">Platform</a>
+        <button onclick="showPage('login')" class="hover:text-white">Login</button>
+        <button onclick="showPage('register')" class="rounded-lg bg-gold px-5 py-2.5 font-bold text-black">Get Started</button>
+      </div>
+      <button onclick="toggleMenu()" class="md:hidden text-2xl">☰</button>
+    </nav>
+    <div id="mobileMenu" class="hidden md:hidden px-5 pb-5 space-y-3 text-gray-300">
+      <button onclick="showPage('home');toggleMenu()" class="block">Home</button>
+      <button onclick="showPage('login');toggleMenu()" class="block">Login</button>
+      <button onclick="showPage('register');toggleMenu()" class="block">Register</button>
+    </div>
+  </header>
+
+  <main class="pt-20">
+    <section id="home" class="page min-h-[calc(100vh-80px)] flex items-center">
+      <div class="max-w-7xl mx-auto px-5 py-20 grid lg:grid-cols-2 gap-14 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 text-xs text-gray-300 mb-7">
+            <span class="h-2 w-2 rounded-full bg-gold"></span> Premium Company Management Platform
+          </div>
+          <h1 class="text-5xl md:text-7xl font-extrabold leading-[.98] tracking-tight">Build. Manage.<br><span class="gold-text">Grow with confidence.</span></h1>
+          <p class="mt-7 text-lg text-gray-400 max-w-xl leading-8">CRATE NIGHT brings accounts, approvals, company operations and member management into one premium workspace.</p>
+          <div class="mt-9 flex flex-wrap gap-4">
+            <button onclick="showPage('register')" class="rounded-xl bg-gold px-7 py-4 font-bold text-black shadow-gold">Create Account</button>
+            <button onclick="showPage('login')" class="rounded-xl border gold-border px-7 py-4 font-semibold">Sign In</button>
+          </div>
+          <div class="mt-10 flex gap-8 text-sm text-gray-500"><span>Secure-ready</span><span>Responsive</span><span>UK-focused</span></div>
+        </div>
+        <div class="glass rounded-3xl p-6 shadow-gold">
+          <div class="flex items-center justify-between mb-7"><div><p class="text-xs text-gray-500">COMMAND CENTER</p><h2 class="text-xl font-bold mt-1">Company Overview</h2></div><span class="text-xs rounded-full border gold-border px-3 py-1 text-gold">LIVE UI</span></div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="rounded-2xl bg-white/[.03] border border-white/10 p-5"><p class="text-gray-500 text-sm">Members</p><p class="text-3xl font-bold mt-2">128</p></div>
+            <div class="rounded-2xl bg-white/[.03] border border-white/10 p-5"><p class="text-gray-500 text-sm">Approvals</p><p class="text-3xl font-bold mt-2">12</p></div>
+            <div class="col-span-2 rounded-2xl bg-white/[.03] border border-white/10 p-5"><div class="flex justify-between"><span class="text-gray-500 text-sm">Platform readiness</span><span class="text-gold text-sm">Foundation</span></div><div class="h-2 bg-white/10 rounded-full mt-4 overflow-hidden"><div class="h-full bg-gold w-[42%]"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="max-w-7xl mx-auto px-5 py-24">
+      <div class="max-w-2xl"><p class="text-gold text-sm font-bold tracking-widest">THE PLATFORM</p><h2 class="text-4xl md:text-5xl font-bold mt-3">Everything in one place.</h2><p class="text-gray-400 mt-5">The interface is now structured so the Firebase-powered services can be connected without rebuilding the front end.</p></div>
+      <div class="grid md:grid-cols-3 gap-5 mt-12">
+        <article class="glass rounded-2xl p-7"><div class="text-2xl text-gold">01</div><h3 class="font-bold text-xl mt-5">Identity & Access</h3><p class="text-gray-400 mt-3 leading-7">Registration, sign-in and account states ready for Firebase Authentication.</p></article>
+        <article class="glass rounded-2xl p-7"><div class="text-2xl text-gold">02</div><h3 class="font-bold text-xl mt-5">Admin Control</h3><p class="text-gray-400 mt-3 leading-7">A dedicated control surface for members, approvals and platform operations.</p></article>
+        <article class="glass rounded-2xl p-7"><div class="text-2xl text-gold">03</div><h3 class="font-bold text-xl mt-5">Documents</h3><p class="text-gray-400 mt-3 leading-7">Prepared architecture for ID cards, certificates, storage and future automation.</p></article>
+      </div>
+    </section>
+
+    <section id="register" class="page hidden-page max-w-2xl mx-auto px-5 py-20 min-h-[80vh]">
+      <div class="glass rounded-3xl p-8 md:p-10"><button onclick="showPage('home')" class="text-gray-500 hover:text-white">← Back</button><h2 class="text-4xl font-bold mt-8">Create your account</h2><p class="text-gray-400 mt-2">Your account form is ready for Firebase Authentication.</p>
+        <form onsubmit="demoRegister(event)" class="mt-8 space-y-4">
+          <input id="regName" required class="w-full rounded-xl bg-black border border-white/10 p-4 outline-none focus:border-gold" placeholder="Full name">
+          <input id="regEmail" required type="email" class="w-full rounded-xl bg-black border border-white/10 p-4 outline-none focus:border-gold" placeholder="Email address">
+          <input id="regPassword" required minlength="6" type="password" class="w-full rounded-xl bg-black border border-white/10 p-4 outline-none focus:border-gold" placeholder="Password (6+ characters)">
+          <button class="w-full rounded-xl bg-gold p-4 font-bold text-black">Create Account</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="login" class="page hidden-page max-w-2xl mx-auto px-5 py-20 min-h-[80vh]">
+      <div class="glass rounded-3xl p-8 md:p-10"><button onclick="showPage('home')" class="text-gray-500 hover:text-white">← Back</button><h2 class="text-4xl font-bold mt-8">Welcome back</h2><p class="text-gray-400 mt-2">Sign in to your CRATE NIGHT workspace.</p>
+        <form onsubmit="demoLogin(event)" class="mt-8 space-y-4"><input required type="email" class="w-full rounded-xl bg-black border border-white/10 p-4 outline-none focus:border-gold" placeholder="Email address"><input required type="password" class="w-full rounded-xl bg-black border border-white/10 p-4 outline-none focus:border-gold" placeholder="Password"><button class="w-full rounded-xl bg-gold p-4 font-bold text-black">Sign In</button></form>
+      </div>
+    </section>
+
+    <section id="dashboard" class="page hidden-page max-w-7xl mx-auto px-5 py-20 min-h-[80vh]"><div class="flex flex-wrap justify-between gap-4 items-end"><div><p class="text-gold text-sm font-bold">MEMBER WORKSPACE</p><h2 class="text-4xl font-bold mt-2">Welcome to CRATE NIGHT</h2></div><button onclick="showPage('home')" class="border gold-border rounded-xl px-5 py-3">Sign out</button></div><div class="grid md:grid-cols-3 gap-5 mt-10"><div class="glass rounded-2xl p-6"><p class="text-gray-500">Membership</p><p class="text-2xl font-bold mt-2">Gold</p></div><div class="glass rounded-2xl p-6"><p class="text-gray-500">Account status</p><p class="text-2xl font-bold mt-2 text-gold">Active</p></div><div class="glass rounded-2xl p-6"><p class="text-gray-500">Documents</p><p class="text-2xl font-bold mt-2">Ready</p></div></div></section>
+
+    <section id="admin" class="page hidden-page max-w-7xl mx-auto px-5 py-20 min-h-[80vh]"><p class="text-gold text-sm font-bold">ADMINISTRATION</p><h2 class="text-4xl font-bold mt-2">Control Center</h2><div class="grid md:grid-cols-3 gap-5 mt-10"><div class="glass rounded-2xl p-6"><p class="text-gray-500">Users</p><p class="text-4xl font-bold mt-2">0</p></div><div class="glass rounded-2xl p-6"><p class="text-gray-500">Pending approval</p><p class="text-4xl font-bold mt-2">0</p></div><div class="glass rounded-2xl p-6"><p class="text-gray-500">Revenue</p><p class="text-4xl font-bold mt-2">£0</p></div></div><p class="text-gray-500 mt-8">Firebase-backed admin data will replace these demo values when the backend connection is added.</p></section>
+  </main>
+
+  <footer class="border-t border-white/10 py-10"><div class="max-w-7xl mx-auto px-5 flex flex-wrap justify-between gap-4 text-sm text-gray-500"><span>© 2026 CRATE NIGHT</span><span>Premium Company Management Platform</span></div></footer>
+  <div id="toast" class="toast fixed bottom-6 right-5 z-[60] glass rounded-xl px-5 py-4 text-sm"></div>
+
+  <script>
+    const pages = ['home','register','login','dashboard','admin'];
+    function showPage(page){ pages.forEach(id => document.getElementById(id).classList.add('hidden-page')); document.getElementById(page).classList.remove('hidden-page'); window.scrollTo({top:0,behavior:'smooth'}); }
+    function toggleMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
+    function notify(message){ const t=document.getElementById('toast'); t.textContent=message; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+    function demoRegister(e){ e.preventDefault(); notify('Registration UI is ready — Firebase Authentication is the next backend connection.'); showPage('dashboard'); }
+    function demoLogin(e){ e.preventDefault(); notify('Login UI is ready — connect Firebase Authentication to enable real accounts.'); showPage('dashboard'); }
+  </script>
+</body>
+</html>

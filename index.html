@@ -67,24 +67,24 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="rounded-2xl bg-white/[.03] border border-white/10 p-5"><p class="text-gray-500 text-sm">Members</p><p class="text-3xl font-bold mt-2">128</p></div>
             <div class="rounded-2xl bg-white/[.03] border border-white/10 p-5"><p class="text-gray-500 text-sm">Approvals</p><p class="text-3xl font-bold mt-2">12</p></div>
-            <div class="col-span-2 rounded-2xl bg-white/[.03] border border-white/10 p-5"><div class="flex justify-between"><span class="text-gray-500 text-sm">Platform readiness</span><span class="text-gold text-sm">Foundation</span></div><div class="h-2 bg-white/10 rounded-full mt-4 overflow-hidden"><div class="h-full bg-gold w-[42%]"></div></div></div>
+            <div class="col-span-2 rounded-2xl bg-white/[.03] border border-white/10 p-5"><div class="flex justify-between"><span class="text-gray-500 text-sm">Platform readiness</span><span class="text-gold text-sm">Firebase connected</span></div><div class="h-2 bg-white/10 rounded-full mt-4 overflow-hidden"><div class="h-full bg-gold w-[62%]"></div></div></div>
           </div>
         </div>
       </div>
     </section>
 
     <section id="features" class="max-w-7xl mx-auto px-5 py-24">
-      <div class="max-w-2xl"><p class="text-gold text-sm font-bold tracking-widest">THE PLATFORM</p><h2 class="text-4xl md:text-5xl font-bold mt-3">Everything in one place.</h2><p class="text-gray-400 mt-5">The interface is now structured so the Firebase-powered services can be connected without rebuilding the front end.</p></div>
+      <div class="max-w-2xl"><p class="text-gold text-sm font-bold tracking-widest">THE PLATFORM</p><h2 class="text-4xl md:text-5xl font-bold mt-3">Everything in one place.</h2><p class="text-gray-400 mt-5">The interface is connected to Firebase Authentication and ready for the next backend services.</p></div>
       <div class="grid md:grid-cols-3 gap-5 mt-12">
-        <article class="glass rounded-2xl p-7"><div class="text-2xl text-gold">01</div><h3 class="font-bold text-xl mt-5">Identity & Access</h3><p class="text-gray-400 mt-3 leading-7">Registration, sign-in and account states ready for Firebase Authentication.</p></article>
+        <article class="glass rounded-2xl p-7"><div class="text-2xl text-gold">01</div><h3 class="font-bold text-xl mt-5">Identity & Access</h3><p class="text-gray-400 mt-3 leading-7">Real registration, sign-in and account state through Firebase Authentication.</p></article>
         <article class="glass rounded-2xl p-7"><div class="text-2xl text-gold">02</div><h3 class="font-bold text-xl mt-5">Admin Control</h3><p class="text-gray-400 mt-3 leading-7">A dedicated control surface for members, approvals and platform operations.</p></article>
         <article class="glass rounded-2xl p-7"><div class="text-2xl text-gold">03</div><h3 class="font-bold text-xl mt-5">Documents</h3><p class="text-gray-400 mt-3 leading-7">Prepared architecture for ID cards, certificates, storage and future automation.</p></article>
       </div>
     </section>
 
     <section id="register" class="page hidden-page max-w-2xl mx-auto px-5 py-20 min-h-[80vh]">
-      <div class="glass rounded-3xl p-8 md:p-10"><button onclick="showPage('home')" class="text-gray-500 hover:text-white">← Back</button><h2 class="text-4xl font-bold mt-8">Create your account</h2><p class="text-gray-400 mt-2">Your account form is ready for Firebase Authentication.</p>
-        <form onsubmit="demoRegister(event)" class="mt-8 space-y-4">
+      <div class="glass rounded-3xl p-8 md:p-10"><button onclick="showPage('home')" class="text-gray-500 hover:text-white">← Back</button><h2 class="text-4xl font-bold mt-8">Create your account</h2><p class="text-gray-400 mt-2">Create a real CRATE NIGHT account with Firebase Authentication.</p>
+        <form id="registerForm" class="mt-8 space-y-4">
           <input id="regName" required class="w-full rounded-xl bg-black border border-white/10 p-4 outline-none focus:border-gold" placeholder="Full name">
           <input id="regEmail" required type="email" class="w-full rounded-xl bg-black border border-white/10 p-4 outline-none focus:border-gold" placeholder="Email address">
           <input id="regPassword" required minlength="6" type="password" class="w-full rounded-xl bg-black border border-white/10 p-4 outline-none focus:border-gold" placeholder="Password (6+ characters)">
@@ -95,25 +95,75 @@
 
     <section id="login" class="page hidden-page max-w-2xl mx-auto px-5 py-20 min-h-[80vh]">
       <div class="glass rounded-3xl p-8 md:p-10"><button onclick="showPage('home')" class="text-gray-500 hover:text-white">← Back</button><h2 class="text-4xl font-bold mt-8">Welcome back</h2><p class="text-gray-400 mt-2">Sign in to your CRATE NIGHT workspace.</p>
-        <form onsubmit="demoLogin(event)" class="mt-8 space-y-4"><input required type="email" class="w-full rounded-xl bg-black border border-white/10 p-4 outline-none focus:border-gold" placeholder="Email address"><input required type="password" class="w-full rounded-xl bg-black border border-white/10 p-4 outline-none focus:border-gold" placeholder="Password"><button class="w-full rounded-xl bg-gold p-4 font-bold text-black">Sign In</button></form>
+        <form id="loginForm" class="mt-8 space-y-4"><input id="loginEmail" required type="email" class="w-full rounded-xl bg-black border border-white/10 p-4 outline-none focus:border-gold" placeholder="Email address"><input id="loginPassword" required type="password" class="w-full rounded-xl bg-black border border-white/10 p-4 outline-none focus:border-gold" placeholder="Password"><button class="w-full rounded-xl bg-gold p-4 font-bold text-black">Sign In</button></form>
       </div>
     </section>
 
-    <section id="dashboard" class="page hidden-page max-w-7xl mx-auto px-5 py-20 min-h-[80vh]"><div class="flex flex-wrap justify-between gap-4 items-end"><div><p class="text-gold text-sm font-bold">MEMBER WORKSPACE</p><h2 class="text-4xl font-bold mt-2">Welcome to CRATE NIGHT</h2></div><button onclick="showPage('home')" class="border gold-border rounded-xl px-5 py-3">Sign out</button></div><div class="grid md:grid-cols-3 gap-5 mt-10"><div class="glass rounded-2xl p-6"><p class="text-gray-500">Membership</p><p class="text-2xl font-bold mt-2">Gold</p></div><div class="glass rounded-2xl p-6"><p class="text-gray-500">Account status</p><p class="text-2xl font-bold mt-2 text-gold">Active</p></div><div class="glass rounded-2xl p-6"><p class="text-gray-500">Documents</p><p class="text-2xl font-bold mt-2">Ready</p></div></div></section>
+    <section id="dashboard" class="page hidden-page max-w-7xl mx-auto px-5 py-20 min-h-[80vh]"><div class="flex flex-wrap justify-between gap-4 items-end"><div><p class="text-gold text-sm font-bold">MEMBER WORKSPACE</p><h2 class="text-4xl font-bold mt-2">Welcome, <span id="dashboardName">Member</span></h2><p id="dashboardEmail" class="text-gray-500 mt-2"></p></div><button onclick="logoutUser()" class="border gold-border rounded-xl px-5 py-3">Sign out</button></div><div class="grid md:grid-cols-3 gap-5 mt-10"><div class="glass rounded-2xl p-6"><p class="text-gray-500">Membership</p><p class="text-2xl font-bold mt-2">Gold</p></div><div class="glass rounded-2xl p-6"><p class="text-gray-500">Account status</p><p class="text-2xl font-bold mt-2 text-gold">Active</p></div><div class="glass rounded-2xl p-6"><p class="text-gray-500">Authentication</p><p class="text-2xl font-bold mt-2">Firebase</p></div></div></section>
 
-    <section id="admin" class="page hidden-page max-w-7xl mx-auto px-5 py-20 min-h-[80vh]"><p class="text-gold text-sm font-bold">ADMINISTRATION</p><h2 class="text-4xl font-bold mt-2">Control Center</h2><div class="grid md:grid-cols-3 gap-5 mt-10"><div class="glass rounded-2xl p-6"><p class="text-gray-500">Users</p><p class="text-4xl font-bold mt-2">0</p></div><div class="glass rounded-2xl p-6"><p class="text-gray-500">Pending approval</p><p class="text-4xl font-bold mt-2">0</p></div><div class="glass rounded-2xl p-6"><p class="text-gray-500">Revenue</p><p class="text-4xl font-bold mt-2">£0</p></div></div><p class="text-gray-500 mt-8">Firebase-backed admin data will replace these demo values when the backend connection is added.</p></section>
+    <section id="admin" class="page hidden-page max-w-7xl mx-auto px-5 py-20 min-h-[80vh]"><p class="text-gold text-sm font-bold">ADMINISTRATION</p><h2 class="text-4xl font-bold mt-2">Control Center</h2><div class="grid md:grid-cols-3 gap-5 mt-10"><div class="glass rounded-2xl p-6"><p class="text-gray-500">Users</p><p class="text-4xl font-bold mt-2">0</p></div><div class="glass rounded-2xl p-6"><p class="text-gray-500">Pending approval</p><p class="text-4xl font-bold mt-2">0</p></div><div class="glass rounded-2xl p-6"><p class="text-gray-500">Revenue</p><p class="text-4xl font-bold mt-2">£0</p></div></div><p class="text-gray-500 mt-8">Firestore-backed admin data will replace these demo values in the next backend phase.</p></section>
   </main>
 
   <footer class="border-t border-white/10 py-10"><div class="max-w-7xl mx-auto px-5 flex flex-wrap justify-between gap-4 text-sm text-gray-500"><span>© 2026 CRATE NIGHT</span><span>Premium Company Management Platform</span></div></footer>
   <div id="toast" class="toast fixed bottom-6 right-5 z-[60] glass rounded-xl px-5 py-4 text-sm"></div>
 
-  <script>
+  <script type="module">
+    import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from './firebase.js';
+
     const pages = ['home','register','login','dashboard','admin'];
-    function showPage(page){ pages.forEach(id => document.getElementById(id).classList.add('hidden-page')); document.getElementById(page).classList.remove('hidden-page'); window.scrollTo({top:0,behavior:'smooth'}); }
-    function toggleMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
-    function notify(message){ const t=document.getElementById('toast'); t.textContent=message; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
-    function demoRegister(e){ e.preventDefault(); notify('Registration UI is ready — Firebase Authentication is the next backend connection.'); showPage('dashboard'); }
-    function demoLogin(e){ e.preventDefault(); notify('Login UI is ready — connect Firebase Authentication to enable real accounts.'); showPage('dashboard'); }
+    window.showPage = function(page){ pages.forEach(id => document.getElementById(id).classList.add('hidden-page')); document.getElementById(page).classList.remove('hidden-page'); window.scrollTo({top:0,behavior:'smooth'}); };
+    window.toggleMenu = function(){ document.getElementById('mobileMenu').classList.toggle('hidden'); };
+    function notify(message){ const t=document.getElementById('toast'); t.textContent=message; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3500); }
+    function friendlyError(error){
+      const map = {
+        'auth/email-already-in-use': 'এই email দিয়ে আগে থেকেই account আছে। Login করো।',
+        'auth/invalid-email': 'Email address সঠিক নয়।',
+        'auth/weak-password': 'Password কমপক্ষে 6 characters হতে হবে।',
+        'auth/invalid-credential': 'Email বা password ভুল।',
+        'auth/too-many-requests': 'অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করো।'
+      };
+      return map[error.code] || error.message || 'Firebase Authentication error হয়েছে।';
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      try {
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        if (name) await updateProfile(result.user, { displayName: name });
+        notify('Account তৈরি হয়েছে। CRATE NIGHT-এ স্বাগতম!');
+        showPage('dashboard');
+      } catch (error) {
+        notify(friendlyError(error));
+      }
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        notify('Login successful.');
+        showPage('dashboard');
+      } catch (error) {
+        notify(friendlyError(error));
+      }
+    });
+
+    window.logoutUser = async function(){
+      try { await signOut(auth); notify('You have been signed out.'); showPage('home'); }
+      catch (error) { notify(friendlyError(error)); }
+    };
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById('dashboardName').textContent = user.displayName || 'Member';
+        document.getElementById('dashboardEmail').textContent = user.email || '';
+      }
+    });
   </script>
 </body>
 </html>

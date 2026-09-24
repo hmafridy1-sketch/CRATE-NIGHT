@@ -1,11 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 import {
   getAuth,
-  createUserWithEmailAndPassword,
+  createUserWithEmailAndPassword as firebaseCreateUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  updateProfile
+  updateProfile as firebaseUpdateProfile
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-storage.js";
@@ -25,16 +25,27 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-async function createUserProfile(user, name) {
+async function createUserProfile(user, name = "Member") {
   await setDoc(doc(db, "users", user.uid), {
     uid: user.uid,
-    name: name || "Member",
+    name,
     email: user.email || "",
     role: "member",
     status: "active",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
   }, { merge: true });
+}
+
+async function createUserWithEmailAndPassword(email, password) {
+  const result = await firebaseCreateUserWithEmailAndPassword(auth, email, password);
+  await createUserProfile(result.user);
+  return result;
+}
+
+async function updateProfile(user, profile) {
+  await firebaseUpdateProfile(user, profile);
+  await createUserProfile(user, profile?.displayName || user.displayName || "Member");
 }
 
 export {

@@ -11,10 +11,7 @@ export async function submitApplication(data = {}) {
     phone: data.phone || '',
     purpose: data.purpose || '',
     status: 'pending',
-    reviewNote: '',
-    reviewedBy: '',
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
+    createdAt: serverTimestamp()
   });
   return ref.id;
 }

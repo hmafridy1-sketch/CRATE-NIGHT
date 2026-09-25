@@ -1,0 +1,42 @@
+name: Set CRATE NIGHT Admin
+
+on:
+  workflow_dispatch:
+    inputs:
+      email:
+        description: Firebase email to grant admin access
+        required: true
+        default: cratenight@gmail.com
+
+jobs:
+  set-admin:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Set Firebase admin custom claim
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          ADMIN_EMAIL: ${{ inputs.email }}
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('fs');
+          const { execFileSync } = require('child_process');
+          const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
+          if (!raw) throw new Error('Missing FIREBASE_SERVICE_ACCOUNT secret.');
+          fs.writeFileSync('/tmp/service-account.json', raw, { mode: 0o600 });
+          execFileSync('npm', ['init', '-y'], { stdio: 'ignore' });
+          execFileSync('npm', ['install', '--no-audit', '--no-fund', 'firebase-admin'], { stdio: 'inherit' });
+          const { getApps, initializeApp, cert } = require('firebase-admin/app');
+          const { getAuth } = require('firebase-admin/auth');
+          const serviceAccount = JSON.parse(fs.readFileSync('/tmp/service-account.json', 'utf8'));
+          if (!getApps().length) initializeApp({ credential: cert(serviceAccount) });
+          const email = process.env.ADMIN_EMAIL.toLowerCase().trim();
+          (async () => {
+            const user = await getAuth().getUserByEmail(email);
+            await getAuth().setCustomUserClaims(user.uid, { ...(user.customClaims || {}), admin: true });
+            console.log(`Admin claim set for ${email}.`);
+          })().catch(err => { console.error(err); process.exit(1); });
+          NODE
+          rm -f /tmp/service-account.json

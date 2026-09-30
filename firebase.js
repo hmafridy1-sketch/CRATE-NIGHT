@@ -5,7 +5,13 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  updateProfile as firebaseUpdateProfile
+  updateProfile as firebaseUpdateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+  RecaptchaVerifier,
+  signInWithPhoneNumber
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-storage.js";
@@ -24,12 +30,17 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
+const googleProvider = new GoogleAuthProvider();
+
+let phoneConfirmationResult = null;
+let phoneRecaptchaVerifier = null;
 
 async function createUserProfile(user, name = "Member") {
   await setDoc(doc(db, "users", user.uid), {
     uid: user.uid,
     name,
     email: user.email || "",
+    phone: user.phoneNumber || "",
     role: "member",
     status: "active",
     createdAt: serverTimestamp(),
@@ -41,6 +52,46 @@ async function createUserWithEmailAndPassword(email, password) {
   const result = await firebaseCreateUserWithEmailAndPassword(auth, email, password);
   await createUserProfile(result.user);
   return result;
+}
+
+async function signInWithGoogle() {
+  // Redirect is preferred for mobile browsers.
+  return signInWithRedirect(auth, googleProvider);
+}
+
+async function completeGoogleRedirect() {
+  return getRedirectResult(auth);
+}
+
+function createPhoneRecaptcha(containerId = "phone-recaptcha") {
+  if (phoneRecaptchaVerifier) return phoneRecaptchaVerifier;
+  phoneRecaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
+    size: "invisible"
+  });
+  return phoneRecaptchaVerifier;
+}
+
+async function startPhoneSignIn(phoneNumber, containerId = "phone-recaptcha") {
+  const verifier = createPhoneRecaptcha(containerId);
+  phoneConfirmationResult = await signInWithPhoneNumber(auth, phoneNumber, verifier);
+  return phoneConfirmationResult;
+}
+
+async function confirmPhoneCode(code) {
+  if (!phoneConfirmationResult) {
+    throw new Error("Start phone verification first.");
+  }
+  const result = await phoneConfirmationResult.confirm(code);
+  await createUserProfile(result.user);
+  return result;
+}
+
+function clearPhoneRecaptcha() {
+  if (phoneRecaptchaVerifier) {
+    phoneRecaptchaVerifier.clear();
+    phoneRecaptchaVerifier = null;
+  }
+  phoneConfirmationResult = null;
 }
 
 async function updateProfile(user, profile) {
@@ -58,5 +109,10 @@ export {
   signOut,
   onAuthStateChanged,
   updateProfile,
-  createUserProfile
+  createUserProfile,
+  signInWithGoogle,
+  completeGoogleRedirect,
+  startPhoneSignIn,
+  confirmPhoneCode,
+  clearPhoneRecaptcha
 };

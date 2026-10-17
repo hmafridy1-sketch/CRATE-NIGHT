@@ -50,6 +50,33 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    // Jarvis Task Engine: users can access only tasks they own.
+    match /tasks/{taskId} {
+      function validTaskData(data) {
+        return data.keys().hasAll(['ownerUid', 'title', 'description', 'priority', 'status', 'createdAt', 'updatedAt', 'completedAt'])
+          && data.keys().hasOnly(['ownerUid', 'title', 'description', 'priority', 'status', 'createdAt', 'updatedAt', 'completedAt'])
+          && data.ownerUid is string
+          && data.title is string && data.title.size() > 0 && data.title.size() <= 120
+          && data.description is string && data.description.size() <= 1200
+          && data.priority in ['low', 'normal', 'high']
+          && data.status in ['queued', 'in_progress', 'completed', 'failed'];
+      }
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && validTaskData(request.resource.data)
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time
+        && request.resource.data.completedAt == null;
+      allow read, delete: if signedIn() && resource.data.ownerUid == request.auth.uid;
+      allow update: if signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt', 'completedAt'])
+        && request.resource.data.status in ['queued', 'in_progress', 'completed', 'failed']
+        && request.resource.data.updatedAt == request.time
+        && (request.resource.data.completedAt == null || request.resource.data.completedAt == request.time);
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

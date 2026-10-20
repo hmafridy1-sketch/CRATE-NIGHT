@@ -11,11 +11,21 @@ The repository now contains the premium responsive homepage and shared styles, p
 3. Open **Actions** and check **Deploy Jekyll with GitHub Pages dependencies preinstalled**. Wait for the latest run to finish successfully.
 4. Open the public Pages URL in a private/incognito browser tab and hard-refresh. Test the navigation and layout on mobile and desktop.
 
-## 2. Firebase deployment prerequisite
+## 2. Firebase deployment prerequisite — current blocker
 
-The workflow `.github/workflows/firebase-deploy.yml` deliberately stops before deployment if the repository secret `FIREBASE_SERVICE_ACCOUNT` is missing. It needs a JSON service-account key for the Firebase project `crate-night-eaa55`.
+The latest checked Firebase workflow failed at **Authenticate Firebase** because the repository secret `FIREBASE_SERVICE_ACCOUNT` was missing or unavailable. The GitHub Pages workflow succeeded, but Firebase Hosting/Rules deployment has not been confirmed.
 
-Only a project owner should create a least-privilege deployment service account and add its JSON content in **Repository → Settings → Secrets and variables → Actions → New repository secret** with the exact name `FIREBASE_SERVICE_ACCOUNT`. Never commit the JSON key, paste it into a chat, or put it in website JavaScript. If you cannot safely create/manage service-account keys, leave this deployment blocked rather than weakening authentication.
+The deployment workflow now validates that the secret is valid JSON, contains the required service-account fields, and belongs to the expected project `crate-night-eaa55`. Invalid credentials fail early with a clear error, and the temporary key file is cleaned up.
+
+Next action for the project owner:
+
+1. Open the [CRATE NIGHT repository](https://github.com/hmafridy1-sketch/CRATE-NIGHT).
+2. Go to **Settings → Secrets and variables → Actions → New repository secret**.
+3. Set the exact secret name to `FIREBASE_SERVICE_ACCOUNT`.
+4. Paste the full JSON contents of a deployment service-account key for project `crate-night-eaa55` into the secret value and save it.
+5. Open **Actions → CRATE NIGHT Firebase Deploy → Run workflow** (or push a new commit) and inspect the run.
+
+Only a trusted project owner should create/manage this credential. Never commit the JSON key, paste it into chat, or put it in website JavaScript. Do not send the key to anyone. If you cannot safely create/manage service-account keys, leave deployment blocked rather than weakening authentication.
 
 The workflow deploys Firestore Rules, Storage Rules and Firebase Hosting. The GitHub Pages website is published separately.
 

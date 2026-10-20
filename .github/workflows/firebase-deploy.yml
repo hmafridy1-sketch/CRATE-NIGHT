@@ -56,7 +56,6 @@ jobs:
             exit 1
           fi
           credential_file="$RUNNER_TEMP/firebase-service-account.json"
-          trap 'rm -f "$credential_file"' EXIT
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$credential_file"
           node - "$credential_file" "$FIREBASE_PROJECT_ID" <<'NODE'
           const fs = require('fs');

@@ -7,7 +7,6 @@ import {
   onAuthStateChanged,
   updateProfile as firebaseUpdateProfile,
   GoogleAuthProvider,
-  signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
   RecaptchaVerifier,
@@ -38,8 +37,13 @@ let phoneRecaptchaVerifier = null;
 async function createUserProfile(user, name = "Member") {
   const ref = doc(db, "users", user.uid);
   const existing = await getDoc(ref);
-  // Never overwrite an existing profile's role or status during sign-in.
-  if (existing.exists()) return;
+  if (existing.exists()) {
+    // Allow a newly registered member's chosen name to replace the temporary fallback only.
+    if (name !== "Member" && existing.data().name === "Member") {
+      await setDoc(ref, { name, email: user.email || "", updatedAt: serverTimestamp() }, { merge: true });
+    }
+    return;
+  }
 
   await setDoc(ref, {
     uid: user.uid,
@@ -57,14 +61,13 @@ async function ensureUserProfile(user) {
   await createUserProfile(user, user.displayName || "Member");
 }
 
-async function createUserWithEmailAndPassword(email, password) {
+async function createUserWithEmailAndPassword(email, password, name = "Member") {
   const result = await firebaseCreateUserWithEmailAndPassword(auth, email, password);
-  await createUserProfile(result.user);
+  await createUserProfile(result.user, name);
   return result;
 }
 
 async function signInWithGoogle() {
-  // Redirect is preferred for mobile browsers.
   return signInWithRedirect(auth, googleProvider);
 }
 
@@ -74,9 +77,7 @@ async function completeGoogleRedirect() {
 
 function createPhoneRecaptcha(containerId = "phone-recaptcha") {
   if (phoneRecaptchaVerifier) return phoneRecaptchaVerifier;
-  phoneRecaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
-    size: "invisible"
-  });
+  phoneRecaptchaVerifier = new RecaptchaVerifier(auth, containerId, { size: "invisible" });
   return phoneRecaptchaVerifier;
 }
 
@@ -87,11 +88,9 @@ async function startPhoneSignIn(phoneNumber, containerId = "phone-recaptcha") {
 }
 
 async function confirmPhoneCode(code) {
-  if (!phoneConfirmationResult) {
-    throw new Error("Start phone verification first.");
-  }
+  if (!phoneConfirmationResult) throw new Error("Start phone verification first.");
   const result = await phoneConfirmationResult.confirm(code);
-  await createUserProfile(result.user);
+  await createUserProfile(result.user, result.user.displayName || "Member");
   return result;
 }
 
@@ -105,7 +104,6 @@ function clearPhoneRecaptcha() {
 
 async function updateProfile(user, profile) {
   await firebaseUpdateProfile(user, profile);
-  // Profile edits must not reset role/status or rewrite creation metadata.
   const updates = { updatedAt: serverTimestamp() };
   if (profile?.displayName !== undefined) updates.name = profile.displayName;
   if (user.email) updates.email = user.email;
@@ -113,20 +111,11 @@ async function updateProfile(user, profile) {
 }
 
 export {
-  app,
-  auth,
-  db,
-  storage,
+  app, auth, db, storage,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  updateProfile,
-  createUserProfile,
-  ensureUserProfile,
-  signInWithGoogle,
-  completeGoogleRedirect,
-  startPhoneSignIn,
-  confirmPhoneCode,
-  clearPhoneRecaptcha
+  signOut, onAuthStateChanged, updateProfile,
+  createUserProfile, ensureUserProfile,
+  signInWithGoogle, completeGoogleRedirect,
+  startPhoneSignIn, confirmPhoneCode, clearPhoneRecaptcha
 };

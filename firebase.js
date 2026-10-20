@@ -36,7 +36,12 @@ let phoneConfirmationResult = null;
 let phoneRecaptchaVerifier = null;
 
 async function createUserProfile(user, name = "Member") {
-  await setDoc(doc(db, "users", user.uid), {
+  const ref = doc(db, "users", user.uid);
+  const existing = await getDoc(ref);
+  // Never overwrite an existing profile's role or status during sign-in.
+  if (existing.exists()) return;
+
+  await setDoc(ref, {
     uid: user.uid,
     name,
     email: user.email || "",
@@ -45,15 +50,11 @@ async function createUserProfile(user, name = "Member") {
     status: "active",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
-  }, { merge: true });
+  });
 }
 
 async function ensureUserProfile(user) {
-  const ref = doc(db, "users", user.uid);
-  const existing = await getDoc(ref);
-  if (!existing.exists()) {
-    await createUserProfile(user, user.displayName || "Member");
-  }
+  await createUserProfile(user, user.displayName || "Member");
 }
 
 async function createUserWithEmailAndPassword(email, password) {
@@ -104,7 +105,11 @@ function clearPhoneRecaptcha() {
 
 async function updateProfile(user, profile) {
   await firebaseUpdateProfile(user, profile);
-  await createUserProfile(user, profile?.displayName || user.displayName || "Member");
+  // Profile edits must not reset role/status or rewrite creation metadata.
+  const updates = { updatedAt: serverTimestamp() };
+  if (profile?.displayName !== undefined) updates.name = profile.displayName;
+  if (user.email) updates.email = user.email;
+  await setDoc(doc(db, "users", user.uid), updates, { merge: true });
 }
 
 export {

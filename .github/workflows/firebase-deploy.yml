@@ -50,13 +50,34 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
-            echo 'Missing FIREBASE_SERVICE_ACCOUNT GitHub secret.'
-            echo 'Configure the repository secret before production deployment.'
+          if [ -z "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
+            echo "::error::Missing FIREBASE_SERVICE_ACCOUNT repository secret."
+            echo "Add it in Settings > Secrets and variables > Actions before deployment."
             exit 1
           fi
-          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-service-account.json"
-          echo "credentials=$RUNNER_TEMP/firebase-service-account.json" >> "$GITHUB_OUTPUT"
+          credential_file="$RUNNER_TEMP/firebase-service-account.json"
+          trap 'rm -f "$credential_file"' EXIT
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$credential_file"
+          node - "$credential_file" "$FIREBASE_PROJECT_ID" <<'NODE'
+          const fs = require('fs');
+          const [file, expectedProject] = process.argv.slice(2);
+          let key;
+          try {
+            key = JSON.parse(fs.readFileSync(file, 'utf8'));
+          } catch {
+            console.error('FIREBASE_SERVICE_ACCOUNT is not valid JSON.');
+            process.exit(1);
+          }
+          if (!key.client_email || !key.private_key || !key.project_id) {
+            console.error('Service account JSON is missing required fields.');
+            process.exit(1);
+          }
+          if (key.project_id !== expectedProject) {
+            console.error(`Service account project_id does not match ${expectedProject}.`);
+            process.exit(1);
+          }
+          NODE
+          echo "credentials=$credential_file" >> "$GITHUB_OUTPUT"
 
       - name: Deploy Firestore Rules, Storage Rules and Hosting
         env:

@@ -48,7 +48,15 @@ async function createUserProfile(user, name = "Member") {
   }, { merge: true });
 }
 
-async function ensureUserProfile(user) {\n  const ref = doc(db, "users", user.uid);\n  const existing = await getDoc(ref);\n  if (!existing.exists()) {\n    await createUserProfile(user, user.displayName || "Member");\n  }\n}\n\nasync function createUserWithEmailAndPassword(email, password) {
+async function ensureUserProfile(user) {
+  const ref = doc(db, "users", user.uid);
+  const existing = await getDoc(ref);
+  if (!existing.exists()) {
+    await createUserProfile(user, user.displayName || "Member");
+  }
+}
+
+async function createUserWithEmailAndPassword(email, password) {
   const result = await firebaseCreateUserWithEmailAndPassword(auth, email, password);
   await createUserProfile(result.user);
   return result;

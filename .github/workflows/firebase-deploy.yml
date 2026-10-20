@@ -35,8 +35,9 @@ jobs:
           test -f firebase.json
           test -f .firebaserc
           test -f firestore.rules
+          test -f firestore.indexes.json
           test -f storage.rules
-          node -e "JSON.parse(require('fs').readFileSync('firebase.json','utf8')); JSON.parse(require('fs').readFileSync('.firebaserc','utf8'));"
+          node -e "JSON.parse(require('fs').readFileSync('firebase.json','utf8')); JSON.parse(require('fs').readFileSync('.firebaserc','utf8')); JSON.parse(require('fs').readFileSync('firestore.indexes.json','utf8'));"
           grep -q 'crate-night-eaa55' .firebaserc
           echo 'Firebase configuration and Rules files validated.'
 
@@ -84,7 +85,7 @@ jobs:
         run: |
           firebase deploy \
             --project "$FIREBASE_PROJECT_ID" \
-            --only firestore:rules,storage,hosting \
+            --only firestore,storage,hosting \
             --non-interactive
 
       - name: Remove temporary credentials

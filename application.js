@@ -23,18 +23,21 @@ export function watchMyApplications(callback) {
   return onSnapshot(q, snap => callback(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
 }
 
-export function watchPendingApplications(callback) {
+export function watchPendingApplications(callback, onError = console.error) {
   const q = query(collection(db, 'applications'), where('status', '==', 'pending'), orderBy('createdAt', 'desc'));
-  return onSnapshot(q, snap => callback(snap.docs.map(d => ({ id: d.id, ...d.data() }))));
+  return onSnapshot(q, snap => callback(snap.docs.map(d => ({ id: d.id, ...d.data() }))), onError);
 }
 
 export async function reviewApplication(applicationId, status, reviewNote = '') {
   const user = auth.currentUser;
   if (!user) throw new Error('Please sign in first.');
   if (!['approved', 'rejected'].includes(status)) throw new Error('Invalid application status.');
+  // Client-side guard improves feedback; Firestore Rules enforce actual permissions.
+  const token = await user.getIdTokenResult();
+  if (token.claims.admin !== true) throw new Error('Administrator access is required.');
   await updateDoc(doc(db, 'applications', applicationId), {
     status,
-    reviewNote,
+    reviewNote: String(reviewNote).slice(0, 1000),
     reviewedBy: user.uid,
     updatedAt: serverTimestamp()
   });

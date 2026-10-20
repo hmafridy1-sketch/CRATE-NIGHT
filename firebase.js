@@ -13,7 +13,7 @@ import {
   RecaptchaVerifier,
   signInWithPhoneNumber
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-storage.js";
 
 const firebaseConfig = {
@@ -48,7 +48,7 @@ async function createUserProfile(user, name = "Member") {
   }, { merge: true });
 }
 
-async function createUserWithEmailAndPassword(email, password) {
+async function ensureUserProfile(user) {\n  const ref = doc(db, "users", user.uid);\n  const existing = await getDoc(ref);\n  if (!existing.exists()) {\n    await createUserProfile(user, user.displayName || "Member");\n  }\n}\n\nasync function createUserWithEmailAndPassword(email, password) {
   const result = await firebaseCreateUserWithEmailAndPassword(auth, email, password);
   await createUserProfile(result.user);
   return result;

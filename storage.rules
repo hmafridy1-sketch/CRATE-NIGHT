@@ -4,9 +4,7 @@ service firebase.storage {
   match /b/{bucket}/o {
     function signedIn() { return request.auth != null; }
     function isAdmin() {
-      return signedIn()
-        && (request.auth.token.admin == true
-            || request.auth.token.email == 'cratenight@gmail.com');
+      return signedIn() && request.auth.token.admin == true;
     }
 
     // Private user files. A user can access only their own folder.

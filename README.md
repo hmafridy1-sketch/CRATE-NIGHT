@@ -1,4 +1,5 @@
-
+FIREBASE_SERVICE_ACCOUNT
+crate-night-eaa55
 CRATE NIGHT
 
 Firebase deployment trigger.

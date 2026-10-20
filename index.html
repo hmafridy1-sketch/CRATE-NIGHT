@@ -1,39 +1,153 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CRATE NIGHT</title><script src="https://cdn.tailwindcss.com"></script>
-<style>
-body{background:#050505;color:#fff;font-family:Inter,system-ui,sans-serif}.glass{background:#101010d9;border:1px solid #d4af3733;backdrop-filter:blur(14px)}.gold-text{background:linear-gradient(90deg,#fff0a8,#D4AF37,#fff0a8);-webkit-background-clip:text;background-clip:text;color:transparent}.page{display:none}.page.active{display:block}.status{border-radius:999px;padding:.25rem .65rem;font-size:.75rem;font-weight:700}.pending{background:#d4af3722;color:#D4AF37}.approved{background:#16a34a22;color:#4ade80}.rejected{background:#ef444422;color:#f87171}.field{width:100%;background:#050505;border:1px solid #ffffff1a;border-radius:.75rem;padding:1rem;outline:none;color:white}.field:focus{border-color:#D4AF37}
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070707">
+<meta name="description" content="Crate Night brings business operations, member applications, approvals and digital workflows into one modern workspace.">
+<title>CRATE NIGHT — Business Operations, Simplified</title>
+<link rel="stylesheet" href="./site.css">
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-<header class="fixed top-0 inset-x-0 z-50 bg-black/85 backdrop-blur border-b border-white/10"><nav class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center"><button class="font-extrabold tracking-[.2em] gold-text" onclick="show('home')">CRATE NIGHT</button><div class="flex gap-3"><button onclick="show('login')" class="px-4 py-2 text-sm">Login</button><button onclick="show('register')" class="px-4 py-2 rounded-lg bg-[#D4AF37] text-black font-bold text-sm">Register</button></div></nav></header>
-<main class="pt-20">
-<section id="home" class="page active"><div class="max-w-7xl mx-auto px-5 py-24"><h1 class="text-5xl md:text-7xl font-extrabold">Build. Manage.<br><span class="gold-text">Grow with confidence.</span></h1><p class="text-gray-400 text-lg mt-7">Accounts, applications, approvals and member operations in one secure workspace.</p><div class="flex gap-4 mt-9"><button onclick="show('register')" class="bg-[#D4AF37] text-black font-bold rounded-xl px-7 py-4">Create Account</button><button onclick="show('login')" class="border border-[#d4af3766] rounded-xl px-7 py-4">Sign In</button></div></div></section>
-<section id="register" class="page max-w-xl mx-auto px-5 py-16"><div class="glass rounded-3xl p-8"><button onclick="show('home')">← Back</button><h2 class="text-4xl font-bold mt-7">Create account</h2><form id="registerForm" class="space-y-4 mt-8"><input id="regName" required class="field" placeholder="Full name"><input id="regEmail" required type="email" class="field" placeholder="Email"><input id="regPassword" required minlength="6" type="password" class="field" placeholder="Password (6+ characters)"><button class="w-full bg-[#D4AF37] text-black font-bold rounded-xl p-4">Create Account</button></form><div class="border-t border-white/10 mt-7 pt-6"><p class="text-gray-500 text-sm mb-3">Or continue with</p><button type="button" id="registerGoogle" class="w-full border border-white/15 rounded-xl p-3 font-semibold">Continue with Google</button></div></div></section>
-<section id="login" class="page max-w-xl mx-auto px-5 py-16"><div class="glass rounded-3xl p-8"><button onclick="show('home')">← Back</button><h2 class="text-4xl font-bold mt-7">Sign in</h2><form id="loginForm" class="space-y-4 mt-8"><input id="loginEmail" required type="email" class="field" placeholder="Email"><input id="loginPassword" required type="password" class="field" placeholder="Password"><button class="w-full bg-[#D4AF37] text-black font-bold rounded-xl p-4">Sign In</button></form><div class="grid sm:grid-cols-2 gap-3 mt-4"><button type="button" id="loginGoogle" class="border border-white/15 rounded-xl p-3 font-semibold">Google Sign-in</button><button type="button" id="openPhone" class="border border-white/15 rounded-xl p-3 font-semibold">Phone Sign-in</button></div><div id="phoneBox" class="hidden mt-5 space-y-3 border-t border-white/10 pt-5"><input id="phoneNumber" class="field" placeholder="Phone e.g. +971501234567"><div id="phone-recaptcha"></div><button type="button" id="sendPhoneCode" class="w-full border border-[#d4af3766] rounded-xl p-3">Send SMS code</button><input id="phoneCode" class="field hidden" inputmode="numeric" maxlength="6" placeholder="6-digit verification code"><button type="button" id="verifyPhoneCode" class="w-full bg-[#D4AF37] text-black font-bold rounded-xl p-3 hidden">Verify phone</button></div></div></section>
-<section id="dashboard" class="page max-w-6xl mx-auto px-5 py-16"><h2 class="text-4xl font-bold">Welcome, <span id="dashName">Member</span></h2><p id="dashEmail" class="text-gray-500 mt-2"></p><button onclick="logout()" class="mt-5 border border-[#d4af3766] rounded-xl px-5 py-3">Sign out</button><div class="grid lg:grid-cols-2 gap-6 mt-10"><div class="glass rounded-2xl p-7"><h3 class="text-2xl font-bold">New Application</h3><form id="applicationForm" class="space-y-4 mt-6"><input id="appPhone" class="field" placeholder="Phone"><textarea id="appPurpose" required class="field min-h-32" placeholder="Application purpose"></textarea><button class="w-full bg-[#D4AF37] text-black font-bold rounded-xl p-4">Submit Application</button></form></div><div class="glass rounded-2xl p-7"><h3 class="text-2xl font-bold">My Applications</h3><div id="myApplications" class="space-y-3 mt-6"></div></div></div></section>
-<section id="admin" class="page max-w-6xl mx-auto px-5 py-16"><div class="flex justify-between"><div><p class="text-[#D4AF37] text-sm font-bold">SECURE ADMIN</p><h2 class="text-4xl font-bold mt-2">Application Review</h2></div><button onclick="logout()" class="border border-[#d4af3766] rounded-xl px-5 py-3">Sign out</button></div><div id="pendingApplications" class="grid md:grid-cols-2 gap-5 mt-10"></div></section>
-</main><div id="toast" class="fixed bottom-5 right-5 glass rounded-xl px-5 py-4 hidden"></div>
+<header class="site-header">
+  <nav class="site-nav" aria-label="Main navigation">
+    <button class="brand" onclick="show('home')" aria-label="Crate Night home"><span class="brand-mark">C</span><span>CRATE NIGHT</span></button>
+    <div class="nav-links" id="navLinks">
+      <a href="#platform" onclick="closeNav()">Platform</a>
+      <a href="#features" onclick="closeNav()">Features</a>
+      <a href="#how-it-works" onclick="closeNav()">How it works</a>
+    </div>
+    <div class="nav-actions">
+      <button onclick="show('login')" class="btn-ghost">Log in</button>
+      <button onclick="show('register')" class="btn-gold">Get started <span aria-hidden="true">↗</span></button>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+<section id="home" class="page active">
+  <div class="home-wrap" id="platform">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-dot"></span> One workspace. Better business.</div>
+        <h1 class="hero-title">Make work flow.<br><span class="gold-text">Make progress real.</span></h1>
+        <p class="hero-copy">Bring your people, applications, approvals and day-to-day operations into one focused workspace. Crate Night helps growing teams stay organised and move forward with confidence.</p>
+        <div class="hero-actions">
+          <button onclick="show('register')" class="btn-gold">Create your workspace <span aria-hidden="true">↗</span></button>
+          <button onclick="show('login')" class="btn-ghost">Sign in to Crate Night</button>
+        </div>
+        <div class="trust-row">
+          <span class="trust-item"><span class="check">✓</span> Member workspace</span>
+          <span class="trust-item"><span class="check">✓</span> Application tracking</span>
+          <span class="trust-item"><span class="check">✓</span> Role-aware workflows</span>
+        </div>
+      </div>
+      <div class="hero-visual" aria-label="Illustration of the Crate Night business dashboard">
+        <div class="orbit"></div>
+        <div class="dash-preview">
+          <div class="preview-top"><div class="brand"><span class="brand-mark">C</span><span>WORKSPACE</span></div><span class="preview-status">● Workspace ready</span></div>
+          <div class="preview-title">Your operations, in focus.</div>
+          <div class="preview-sub">A clearer view of the work moving forward.</div>
+          <div class="preview-stats">
+            <div class="preview-stat"><small>Applications</small><strong>Track</strong><small>From submission to review</small></div>
+            <div class="preview-stat"><small>Team activity</small><strong>Organise</strong><small>Keep work in one place</small></div>
+          </div>
+          <div class="mini-bars" aria-hidden="true"><span style="height:35%"></span><span style="height:50%"></span><span style="height:42%"></span><span style="height:72%"></span><span style="height:58%"></span><span style="height:88%"></span><span style="height:67%"></span><span style="height:96%"></span><span style="height:77%"></span><span style="height:100%"></span></div>
+          <div class="preview-top" style="padding-top:15px;padding-bottom:0"><span class="preview-sub">Designed for focused work</span><span class="gold-text" style="font-weight:800;font-size:.75rem">CRATE NIGHT</span></div>
+        </div>
+        <div class="floating-note"><strong>Less scattered work.</strong><span style="color:#a5a5aa">More clarity, every day.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section" id="features">
+    <div class="section-head"><div class="section-kicker">Built for momentum</div><h2 class="section-title">The essentials of your business, <span class="gold-text">working together.</span></h2><p class="section-copy">Start with the workflows you need today. Keep your operations structured as your business grows.</p></div>
+    <div class="feature-grid">
+      <article class="feature-card"><div class="feature-icon">◈</div><h3>Member workspace</h3><p>A clear place for people to access their account, see updates and manage their activity.</p></article>
+      <article class="feature-card"><div class="feature-icon">▤</div><h3>Application workflows</h3><p>Collect requests in a consistent format and follow each application through its status.</p></article>
+      <article class="feature-card"><div class="feature-icon">✓</div><h3>Review and approvals</h3><p>Give authorised reviewers a focused view of pending work and recorded decisions.</p></article>
+      <article class="feature-card"><div class="feature-icon">▧</div><h3>Digital documents</h3><p>Build toward organised records and member documents from a central workflow.</p></article>
+      <article class="feature-card"><div class="feature-icon">✉</div><h3>Updates and notifications</h3><p>Keep important workflow events visible, with delivery integrations added as they are configured.</p></article>
+      <article class="feature-card"><div class="feature-icon">✧</div><h3>AI-ready foundation</h3><p>A foundation for a future business assistant, with sensitive actions designed to require approval.</p></article>
+    </div>
+  </section>
+
+  <section class="section" id="how-it-works">
+    <div class="section-head"><div class="section-kicker">A simpler process</div><h2 class="section-title">From first sign-in to <span class="gold-text">next step.</span></h2><p class="section-copy">A straightforward flow that helps members and reviewers understand what happens next.</p></div>
+    <div class="steps-grid">
+      <article class="step-card"><div class="step-num">STEP 01</div><h3>Create an account</h3><p>Register and access your personal Crate Night workspace.</p></article>
+      <article class="step-card"><div class="step-num">STEP 02</div><h3>Submit your request</h3><p>Share the details needed for your application and track it from your dashboard.</p></article>
+      <article class="step-card"><div class="step-num">STEP 03</div><h3>Review and move forward</h3><p>Authorised reviewers assess requests and update the application status.</p></article>
+    </div>
+  </section>
+  <section class="cta-panel"><h2>Ready to bring your work together?</h2><p>Start with a Crate Night account and explore your member workspace.</p><button onclick="show('register')" class="btn-gold">Create an account <span aria-hidden="true">↗</span></button></section>
+</section>
+
+<section id="register" class="page max-w-xl mx-auto px-5 py-16">
+  <div class="glass rounded-3xl p-8">
+    <button onclick="show('home')" class="text-gray-400 hover:text-white">← Back to home</button>
+    <div class="section-kicker mt-7">Join Crate Night</div><h2 class="text-4xl font-bold mt-2">Create account</h2><p class="text-gray-400 mt-3">Set up your member workspace in a few steps.</p>
+    <form id="registerForm" class="space-y-4 mt-8"><input id="regName" required autocomplete="name" class="field" placeholder="Full name"><input id="regEmail" required type="email" autocomplete="email" class="field" placeholder="Email address"><input id="regPassword" required minlength="6" type="password" autocomplete="new-password" class="field" placeholder="Password (6+ characters)"><button class="btn-gold w-full p-4">Create account</button></form>
+    <div class="border-t border-white/10 mt-7 pt-6"><p class="text-gray-500 text-sm mb-3">Or continue with</p><button type="button" id="registerGoogle" class="btn-ghost w-full">Continue with Google</button></div>
+    <p class="text-gray-500 text-xs mt-5">By continuing, you agree to use the workspace responsibly and keep your sign-in details secure.</p>
+  </div>
+</section>
+
+<section id="login" class="page max-w-xl mx-auto px-5 py-16">
+  <div class="glass rounded-3xl p-8">
+    <button onclick="show('home')" class="text-gray-400 hover:text-white">← Back to home</button>
+    <div class="section-kicker mt-7">Welcome back</div><h2 class="text-4xl font-bold mt-2">Sign in</h2><p class="text-gray-400 mt-3">Continue to your Crate Night workspace.</p>
+    <form id="loginForm" class="space-y-4 mt-8"><input id="loginEmail" required type="email" autocomplete="email" class="field" placeholder="Email address"><input id="loginPassword" required type="password" autocomplete="current-password" class="field" placeholder="Password"><button class="btn-gold w-full p-4">Sign in</button></form>
+    <div class="grid sm:grid-cols-2 gap-3 mt-4"><button type="button" id="loginGoogle" class="btn-ghost">Google sign-in</button><button type="button" id="openPhone" class="btn-ghost">Phone sign-in</button></div>
+    <div id="phoneBox" class="hidden mt-5 space-y-3 border-t border-white/10 pt-5"><input id="phoneNumber" class="field" autocomplete="tel" placeholder="Phone e.g. +971501234567"><div id="phone-recaptcha"></div><button type="button" id="sendPhoneCode" class="btn-ghost w-full">Send SMS code</button><input id="phoneCode" class="field hidden" inputmode="numeric" maxlength="6" placeholder="6-digit verification code"><button type="button" id="verifyPhoneCode" class="btn-gold w-full hidden">Verify phone</button></div>
+  </div>
+</section>
+
+<section id="dashboard" class="page max-w-6xl mx-auto px-5 py-16">
+  <div class="flex flex-wrap justify-between items-start gap-4"><div><div class="section-kicker">Member workspace</div><h2 class="text-4xl font-bold mt-2">Welcome, <span id="dashName" class="gold-text">Member</span></h2><p id="dashEmail" class="text-gray-500 mt-2"></p></div><button onclick="logout()" class="btn-ghost">Sign out</button></div>
+  <div class="grid lg:grid-cols-2 gap-6 mt-10">
+    <div class="glass rounded-2xl p-7"><div class="section-kicker">Get started</div><h3 class="text-2xl font-bold mt-2">New application</h3><p class="text-gray-400 text-sm mt-2">Tell us what you need help with.</p><form id="applicationForm" class="space-y-4 mt-6"><input id="appPhone" class="field" autocomplete="tel" placeholder="Phone (optional)"><textarea id="appPurpose" required class="field min-h-32" placeholder="Application purpose"></textarea><button class="btn-gold w-full p-4">Submit application</button></form></div>
+    <div class="glass rounded-2xl p-7"><div class="section-kicker">Your activity</div><h3 class="text-2xl font-bold mt-2">My applications</h3><div id="myApplications" class="space-y-3 mt-6"></div></div>
+  </div>
+</section>
+
+<section id="admin" class="page max-w-6xl mx-auto px-5 py-16">
+  <div class="flex flex-wrap justify-between gap-4"><div><div class="section-kicker">Authorised access</div><h2 class="text-4xl font-bold mt-2">Application review</h2><p class="text-gray-400 mt-2">Review pending requests and record a decision.</p></div><button onclick="logout()" class="btn-ghost">Sign out</button></div>
+  <div id="pendingApplications" class="grid md:grid-cols-2 gap-5 mt-10"></div>
+</section>
+</main>
+
+<footer class="site-footer"><div class="footer-inner"><div><div class="footer-brand">CRATE NIGHT</div><div class="mt-1">A clearer way to manage business workflows.</div></div><div>© <span id="year"></span> Crate Night. Built for focused work.</div></div></footer>
+<div id="toast" role="status" aria-live="polite" class="fixed bottom-5 right-5 glass rounded-xl px-5 py-4 hidden z-50 max-w-sm"></div>
+
+<script>
+document.getElementById('year').textContent=new Date().getFullYear();
+const navToggle=document.getElementById('navToggle'),navLinks=document.getElementById('navLinks');
+window.closeNav=()=>{navLinks.classList.remove('open');navToggle.setAttribute('aria-expanded','false')};
+navToggle.addEventListener('click',()=>{const open=navLinks.classList.toggle('open');navToggle.setAttribute('aria-expanded',String(open))});
+</script>
 <script type="module">
 import{auth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,updateProfile,signInWithGoogle,completeGoogleRedirect,startPhoneSignIn,confirmPhoneCode,clearPhoneRecaptcha}from'./firebase.js';
 import{submitApplication,watchMyApplications,watchPendingApplications,reviewApplication}from'./application.js';
 const pages=['home','register','login','dashboard','admin'];let stopMine=()=>{},stopPending=()=>{};
-window.show=id=>{pages.forEach(x=>document.getElementById(x).classList.remove('active'));document.getElementById(id).classList.add('active');scrollTo(0,0)};
+window.show=id=>{pages.forEach(x=>document.getElementById(x).classList.remove('active'));document.getElementById(id).classList.add('active');window.closeNav?.();window.scrollTo(0,0)};
 function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.remove('hidden');setTimeout(()=>e.classList.add('hidden'),3500)}function err(e){toast(e.message||'কাজটি সম্পন্ন হয়নি।')}function safe(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-window.logout=async()=>{await signOut(auth);clearPhoneRecaptcha();show('home')};
+window.logout=async()=>{try{await signOut(auth);clearPhoneRecaptcha();show('home')}catch(x){err(x)}};
 window.loadMyApplications=()=>{stopMine();stopMine=watchMyApplications(list=>{const box=document.getElementById('myApplications');box.innerHTML=list.length?list.map(a=>`<article class="bg-white/5 border border-white/10 rounded-xl p-4"><div class="flex justify-between gap-3"><b>${safe(a.purpose||'Application')}</b><span class="status ${safe(a.status||'pending')}">${safe(a.status||'pending')}</span></div><p class="text-gray-500 text-sm mt-2">${a.reviewNote?safe(a.reviewNote):'Awaiting review'}</p></article>`).join(''):'<p class="text-gray-500">No applications yet.</p>'})};
 function renderPending(list){const box=document.getElementById('pendingApplications');box.innerHTML=list.length?list.map(a=>`<article class="glass rounded-2xl p-6"><div class="flex justify-between"><b>${safe(a.name||'Member')}</b><span class="status pending">pending</span></div><p class="text-gray-400 mt-3">${safe(a.purpose||'')}</p><p class="text-xs text-gray-500 mt-2">${safe(a.applicantEmail||'')}</p><div class="flex gap-3 mt-3"><button data-action="approve" data-id="${safe(a.id)}" class="flex-1 bg-green-600 rounded-xl p-3 font-bold">Approve</button><button data-action="reject" data-id="${safe(a.id)}" class="flex-1 bg-red-600 rounded-xl p-3 font-bold">Reject</button></div></article>`).join(''):'<p class="text-gray-500">No pending applications.</p>'}
 async function handleGoogle(){try{await signInWithGoogle()}catch(x){err(x)}}
 document.getElementById('registerGoogle').onclick=handleGoogle;document.getElementById('loginGoogle').onclick=handleGoogle;
-document.getElementById('registerForm').onsubmit=async e=>{e.preventDefault();try{const r=await createUserWithEmailAndPassword(regEmail.value.trim(),regPassword.value);await updateProfile(r.user,{displayName:regName.value.trim()});toast('Account তৈরি হয়েছে।');show('dashboard')}catch(x){err(x)}};
-document.getElementById('loginForm').onsubmit=async e=>{e.preventDefault();try{await signInWithEmailAndPassword(auth,loginEmail.value.trim(),loginPassword.value);toast('Login successful.')}catch(x){err(x)}};
+document.getElementById('registerForm').onsubmit=async e=>{e.preventDefault();try{const r=await createUserWithEmailAndPassword(auth,document.getElementById('regEmail').value.trim(),document.getElementById('regPassword').value);await updateProfile(r.user,{displayName:document.getElementById('regName').value.trim()});toast('Account তৈরি হয়েছে।');show('dashboard')}catch(x){err(x)}};
+document.getElementById('loginForm').onsubmit=async e=>{e.preventDefault();try{await signInWithEmailAndPassword(auth,document.getElementById('loginEmail').value.trim(),document.getElementById('loginPassword').value);toast('Login successful.')}catch(x){err(x)}};
 document.getElementById('openPhone').onclick=()=>document.getElementById('phoneBox').classList.toggle('hidden');
 document.getElementById('sendPhoneCode').onclick=async()=>{try{const n=document.getElementById('phoneNumber').value.trim();if(!/^\+[1-9]\d{7,14}$/.test(n))throw new Error('Phone number must use international format, e.g. +971501234567');await startPhoneSignIn(n);document.getElementById('phoneCode').classList.remove('hidden');document.getElementById('verifyPhoneCode').classList.remove('hidden');toast('SMS code sent.')}catch(x){err(x)}};
 document.getElementById('verifyPhoneCode').onclick=async()=>{try{await confirmPhoneCode(document.getElementById('phoneCode').value.trim());toast('Phone sign-in successful.')}catch(x){err(x)}};
-document.getElementById('applicationForm').onsubmit=async e=>{e.preventDefault();try{await submitApplication({phone:appPhone.value.trim(),purpose:appPurpose.value.trim()});appPhone.value='';appPurpose.value='';toast('Application submitted.');loadMyApplications()}catch(x){err(x)}};
+document.getElementById('applicationForm').onsubmit=async e=>{e.preventDefault();try{await submitApplication({phone:document.getElementById('appPhone').value.trim(),purpose:document.getElementById('appPurpose').value.trim()});document.getElementById('appPhone').value='';document.getElementById('appPurpose').value='';toast('Application submitted.');loadMyApplications()}catch(x){err(x)}};
 document.getElementById('pendingApplications').onclick=async e=>{const b=e.target.closest('button[data-action]');if(!b)return;try{await reviewApplication(b.dataset.id,b.dataset.action==='approve'?'approved':'rejected','');toast('Application updated.')}catch(x){err(x)}};
 try{await completeGoogleRedirect()}catch(x){if(x?.code&&x.code!=='auth/no-auth-event')err(x)}
 onAuthStateChanged(auth,async user=>{if(!user){stopMine();stopPending();return}document.getElementById('dashName').textContent=user.displayName||'Member';document.getElementById('dashEmail').textContent=user.email||user.phoneNumber||'';show('dashboard');loadMyApplications();const token=await user.getIdTokenResult(true);const isAdmin=token.claims.admin===true||user.email?.toLowerCase()==='cratenight@gmail.com';if(isAdmin){show('admin');stopPending=watchPendingApplications(renderPending)}});
-</script></body></html>
+</script>
+</body>
+</html>

@@ -118,6 +118,7 @@ export {
   onAuthStateChanged,
   updateProfile,
   createUserProfile,
+  ensureUserProfile,
   signInWithGoogle,
   completeGoogleRedirect,
   startPhoneSignIn,

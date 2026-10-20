@@ -27,7 +27,7 @@ Next action for the project owner:
 
 Only a trusted project owner should create/manage this credential. Never commit the JSON key, paste it into chat, or put it in website JavaScript. Do not send the key to anyone. If you cannot safely create/manage service-account keys, leave deployment blocked rather than weakening authentication.
 
-The workflow deploys Firestore Rules, Storage Rules and Firebase Hosting. The GitHub Pages website is published separately.
+The workflow deploys Firestore Rules, composite query indexes (`firestore.indexes.json`), Storage Rules and Firebase Hosting. The indexes cover each member's application history and the administrator's pending-application queue. The GitHub Pages website is published separately.
 
 ## 3. Configure Firebase Authentication
 
@@ -51,7 +51,7 @@ A trusted project owner must assign the custom claim to the intended administrat
 - [ ] Confirm an administrator with the `admin: true` custom claim can review applications.
 - [ ] Confirm another user's documents and applications are not accessible.
 - [ ] Test invalid sign-in, network errors and mobile layout.
-- [ ] Confirm Firebase Rules are deployed before treating the app as production-ready.
+- [ ] Confirm Firebase Rules and composite indexes are deployed before treating the app as production-ready.
 
 ## Known limitations
 

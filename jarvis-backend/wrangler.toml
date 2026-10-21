@@ -1,0 +1,9 @@
+name = "crate-night-jarvis-api"
+main = "src/index.js"
+compatibility_date = "2026-10-21"
+
+[vars]
+FIREBASE_PROJECT_ID = "crate-night-eaa55"
+GEMMA_MODEL = "google/gemma-4-31b-it:free"
+# Set ALLOWED_ORIGINS in Cloudflare Worker variables to your exact website origin(s), comma-separated.
+# Do not put OPENROUTER_API_KEY in this file; add it as a Worker secret.

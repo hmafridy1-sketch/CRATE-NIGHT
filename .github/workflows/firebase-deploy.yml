@@ -14,11 +14,12 @@ concurrency:
 
 env:
   FIREBASE_PROJECT_ID: crate-night-eaa55
+  FIREBASE_TOOLS_VERSION: 15.34.2
 
 jobs:
   deploy:
     name: Validate and deploy CRATE NIGHT
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Validate deployment files
         shell: bash
@@ -41,8 +42,10 @@ jobs:
           grep -q 'crate-night-eaa55' .firebaserc
           echo 'Firebase configuration and Rules files validated.'
 
-      - name: Install Firebase CLI
-        run: npm install --global firebase-tools
+      - name: Install pinned Firebase CLI
+        run: |
+          npm install --global "firebase-tools@${FIREBASE_TOOLS_VERSION}"
+          firebase --version
 
       - name: Authenticate Firebase
         id: auth

@@ -8,35 +8,57 @@ on:
         required: true
         default: cratenight@gmail.com
 
+permissions:
+  contents: read
+
 jobs:
   set-admin:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    runs-on: ubuntu-24.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pinned Firebase Admin SDK
+        run: |
+          set -euo pipefail
+          npm install --prefix "$RUNNER_TEMP/admin-tooling" --no-save --no-package-lock firebase-admin@14.5.0
+
       - name: Set Firebase admin custom claim
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           ADMIN_EMAIL: ${{ inputs.email }}
+          NODE_PATH: ${{ runner.temp }}/admin-tooling/node_modules
+        shell: bash
         run: |
           set -euo pipefail
-          node <<'NODE'
+          credential_file="$RUNNER_TEMP/firebase-service-account.json"
+          trap 'rm -f "$credential_file"' EXIT
+          if [ -z "${FIREBASE_SERVICE_ACCOUNT:-}" ]; then
+            echo "::error::Missing FIREBASE_SERVICE_ACCOUNT repository secret."
+            exit 1
+          fi
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$credential_file"
+          node - "$credential_file" <<'NODE'
           const fs = require('fs');
-          const { execFileSync } = require('child_process');
-          const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
-          if (!raw) throw new Error('Missing FIREBASE_SERVICE_ACCOUNT secret.');
-          fs.writeFileSync('/tmp/service-account.json', raw, { mode: 0o600 });
-          execFileSync('npm', ['init', '-y'], { stdio: 'ignore' });
-          execFileSync('npm', ['install', '--no-audit', '--no-fund', 'firebase-admin'], { stdio: 'inherit' });
+          const [file] = process.argv.slice(2);
+          const serviceAccount = JSON.parse(fs.readFileSync(file, 'utf8'));
+          if (!serviceAccount.client_email || !serviceAccount.private_key || !serviceAccount.project_id) {
+            throw new Error('Service account JSON is missing required fields.');
+          }
           const { getApps, initializeApp, cert } = require('firebase-admin/app');
           const { getAuth } = require('firebase-admin/auth');
-          const serviceAccount = JSON.parse(fs.readFileSync('/tmp/service-account.json', 'utf8'));
           if (!getApps().length) initializeApp({ credential: cert(serviceAccount) });
           const email = process.env.ADMIN_EMAIL.toLowerCase().trim();
+          if (!email) throw new Error('ADMIN_EMAIL is required.');
           (async () => {
-            const user = await getAuth().getUserByEmail(email);
-            await getAuth().setCustomUserClaims(user.uid, { ...(user.customClaims || {}), admin: true });
+            const auth = getAuth();
+            const user = await auth.getUserByEmail(email);
+            await auth.setCustomUserClaims(user.uid, { ...(user.customClaims || {}), admin: true });
             console.log(`Admin claim set for ${email}.`);
           })().catch(err => { console.error(err); process.exit(1); });
           NODE
-          rm -f /tmp/service-account.json

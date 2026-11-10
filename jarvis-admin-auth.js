@@ -1,10 +1,10 @@
 // Crate Night Jarvis admin authentication guard.
 // Firebase Web API keys identify a project; never place service-account secrets here.
-import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "REPLACE_WITH_FIREBASE_API_KEY",
+  apiKey: "AIzaSyA65dEiRxa2H6mXP-1FudrxSP7cgollS1o",
   authDomain: "crate-night-eaa55.firebaseapp.com",
   projectId: "crate-night-eaa55",
   storageBucket: "crate-night-eaa55.firebasestorage.app",

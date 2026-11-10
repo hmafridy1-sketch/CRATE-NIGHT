@@ -10,7 +10,7 @@
 <div class="hint"><strong>Setup required:</strong> Replace the Firebase Web API key in <code>jarvis-admin-auth.js</code>, enable Email/Password Authentication, and assign the <code>admin: true</code> custom claim from a trusted Admin SDK environment. This page does not let users grant themselves admin access.</div></main>
 <script type="module">
 import { auth } from "./jarvis-admin-auth.js";
-import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 const form=document.getElementById("loginForm"),message=document.getElementById("message"),button=document.getElementById("submitBtn");
 const params=new URLSearchParams(location.search);if(params.get("reason")==="not-admin")message.textContent="This account does not have administrator permission.";else if(params.has("reason"))message.textContent="Could not verify access. Check Firebase configuration and try again.";
 onAuthStateChanged(auth,async user=>{if(!user)return;try{const result=await user.getIdTokenResult(true);if(result.claims.admin===true)location.replace("./admin-dashboard.html");else await signOut(auth)}catch(e){console.error(e);message.textContent="Admin access verification failed."}});
